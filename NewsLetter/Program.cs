@@ -11,9 +11,20 @@ public interface IObserver
     void NotificaCreazione(string nomeUtente);
 }
 
+public interface IEmail
+{
+    string Header();
+
+    string EmailBody();
+    string Footer();
+    
+}
 
 #endregion
 
+#region Classi Concrete Base
+
+#endregion
 #region SINGLETON
 
 
@@ -24,27 +35,27 @@ public interface IObserver
 
 #region OBSERVER
 public class Subscriber : IObserver
+{
+    private string _nome;
+    private List<IObserver> _observers = new List<IObserver>();
+
+    public void NotificaCreazione(string nomeUtente)
     {
-        private string _nome;
-        private List<IObserver> _observers = new List<IObserver>();
-
-        public void NotificaCreazione(string nomeUtente)
+        foreach (var o in _observers)
         {
-            foreach (var o in _observers)
-            {
-                o.NotificaCreazione(_nome);
-            }
-        }
-
-        public void Subscribe(IObserver o)
-        {
-            _observers.Add(o);
-        }
-        public void UnSub(IObserver o)
-        {
-            _observers.Remove(o);
+            o.NotificaCreazione(_nome);
         }
     }
+
+    public void Subscribe(IObserver o)
+    {
+        _observers.Add(o);
+    }
+    public void UnSub(IObserver o)
+    {
+        _observers.Remove(o);
+    }
+}
 #endregion
 
 
