@@ -1,5 +1,10 @@
 ﻿#region INTERFACES
-
+public interface ISubscriber
+{
+    void Subscribe();
+    void UnSun();
+    void Notify();
+}
 
 
 #endregion
