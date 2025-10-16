@@ -8,7 +8,7 @@ public interface ISubscriber
 
 public interface IObserver
 {
-  void NotificaCreazione(string nomeUtente);
+    void NotificaCreazione(string nomeUtente);
 }
 
 
@@ -23,7 +23,28 @@ public interface IObserver
 
 
 #region OBSERVER
+public class Subscriber : IObserver
+    {
+        private string _nome;
+        private List<IObserver> _observers = new List<IObserver>();
 
+        public void NotificaCreazione(string nomeUtente)
+        {
+            foreach (var o in _observers)
+            {
+                o.NotificaCreazione(_nome);
+            }
+        }
+
+        public void Subscribe(IObserver o)
+        {
+            _observers.Add(o);
+        }
+        public void UnSub(IObserver o)
+        {
+            _observers.Remove(o);
+        }
+    }
 #endregion
 
 
@@ -37,65 +58,65 @@ public interface IObserver
 #region Factory
 public class UtenteFactory
 {
-  public static Utente Crea(string nome, string cognome, string email)
-  {
-    return new Utente(nome, cognome, email);
-  }
+    public static Utente Crea(string nome, string cognome, string email)
+    {
+        return new Utente(nome, cognome, email);
+    }
 }
 
 public class Utente
 {
-  private string _nome { get; set; }
-  private string _cognome { get; set; }
-  private string _email { get; set; }
+    private string _nome { get; set; }
+    private string _cognome { get; set; }
+    private string _email { get; set; }
 
-  public string Nome
-  {
-    get { return _nome; }
-    set
+    public string Nome
     {
-      if (value != null)
-      {
-        _nome = value;
-      }
+        get { return _nome; }
+        set
+        {
+            if (value != null)
+            {
+                _nome = value;
+            }
+        }
     }
-  }
 
-  public string Cognome
-  {
-    get { return _cognome; }
-    set
+    public string Cognome
     {
-      if (value != null)
-      {
-        _cognome = value;
-      }
+        get { return _cognome; }
+        set
+        {
+            if (value != null)
+            {
+                _cognome = value;
+            }
+        }
     }
-  }
 
-  public string Email
-  {
-    get { return _email; }
-    set
+    public string Email
     {
-      if (value != null)
-      {
-        _email = value;
-      }
+        get { return _email; }
+        set
+        {
+            if (value != null)
+            {
+                _email = value;
+            }
+        }
     }
-  }
 
-  public Utente(string nome, string cognome, string email)
-  {
-    _nome = nome;
-    _cognome = cognome;
-    _email = email;
-  }
+    public Utente(string nome, string cognome, string email)
+    {
+        _nome = nome;
+        _cognome = cognome;
+        _email = email;
+    }
 
-  public override string ToString()
-  {
-    return $"Nome e cognome dell'utente: {Nome} {Cognome}\nEmail: {Email}";
-  }
+    public override string ToString()
+    {
+        return $"Nome e cognome dell'utente: {Nome} {Cognome}\nEmail: {Email}";
+    }
 }
 #endregion
 
@@ -109,10 +130,10 @@ public class Utente
 
 class Program
 {
-  static void Main(string[] args)
-  {
+    static void Main(string[] args)
+    {
 
-  }
+    }
 }
 
 
