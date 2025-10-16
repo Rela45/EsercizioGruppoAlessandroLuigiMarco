@@ -1,9 +1,9 @@
 ﻿#region INTERFACES
 public interface ISubscriber
 {
-  void Subscribe();
-  void UnSun();
-  void Notify();
+    void Subscribe();
+    void UnSub();
+    void Notify();
 }
 
 public interface IObserver
