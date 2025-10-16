@@ -3,7 +3,7 @@ public interface ISubscriber
 {
     void Subscribe();
     void UnSub();
-    void Notify();
+    void Notify(string messaggio);
 }
 
 public interface IObserver
@@ -27,7 +27,32 @@ public interface IEmail
 #endregion
 #region SINGLETON
 
+sealed class  NewsLetterManager : ISubscriber
+{
+    private static NewsLetterManager _nlm;
+    private List<IObserver> _observer = new List<IObserver>();
+    private NewsLetterManager() { }
 
+    public static NewsLetterManager Instance => _nlm = new NewsLetterManager();
+
+    public void Notify(string messaggio)
+    {
+        foreach(var observer in _observer)
+        {
+            
+        }
+    }
+
+    public void Subscribe()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UnSub()
+    {
+        throw new NotImplementedException();
+    }
+}
 
 
 #endregion
@@ -37,24 +62,15 @@ public interface IEmail
 public class Subscriber : IObserver
 {
     private string _nome;
-    private List<IObserver> _observers = new List<IObserver>();
+
 
     public void NotificaCreazione(string nomeUtente)
     {
-        foreach (var o in _observers)
-        {
-            o.NotificaCreazione(_nome);
-        }
+        Console.WriteLine($"Utente Creato correttamente {nomeUtente}");
+        
     }
 
-    public void Subscribe(IObserver o)
-    {
-        _observers.Add(o);
-    }
-    public void UnSub(IObserver o)
-    {
-        _observers.Remove(o);
-    }
+
 }
 #endregion
 
