@@ -6,6 +6,11 @@ public interface ISubscriber
     void Notify();
 }
 
+public interface IObserver
+{
+        void NotificaCreazione(string nomeUtente);
+}
+
 
 #endregion
 
@@ -45,7 +50,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        
+
     }
 }
 
