@@ -162,7 +162,7 @@ class DeliveryStrategy
 
 
 #region Factory
-public class UtenteFactory
+public static class UtenteFactory
 {
   public static Utente Crea(string nome, string cognome, string email)
   {
@@ -228,7 +228,7 @@ public class Utente
 
 
 #region Decorator
-public class EmailDecorator : IEmail
+public abstract class EmailDecorator : IEmail
 {
 
   protected IEmail _email;
