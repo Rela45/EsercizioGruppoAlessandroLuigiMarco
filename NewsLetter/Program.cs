@@ -13,6 +13,11 @@ public interface IObserver
   void NotificaCreazione(string nomeUtente);
 }
 
+public interface IContent
+{
+  string Content();
+}
+
 public interface IEmail
 {
   string Header();
@@ -24,62 +29,35 @@ public interface IEmail
 
 public interface IStrategy
 {
-    string send();
+  string send();
 }
 
 #endregion
 
 #region Classi Concrete Base
 
-public class PromotionalContent : EmailDecorator
+public class PromotionalContent : IContent
 {
-  public PromotionalContent(IEmail email) : base(email) { }
-  public override string Header()
+  public string Content()
   {
-    return "PromotionalContent";
-  }
-
-  public override string EmailBody()
-  {
-    return "PromotionalContent";
-  }
-  public override string Footer()
-  {
-    return "PromotionalContent";
+    return "Contenuto Promo";
   }
 }
 
-public class TechnicalContent : EmailDecorator
+public class TechnicalContent : IContent
 {
-  public TechnicalContent(IEmail email) : base(email) { }
-  public override string Header()
+  public string Content()
   {
-    return "TechnicalContent";
-  }
-  public override string EmailBody()
-  {
-    return "TechnicalContent";
-  }
-  public override string Footer()
-  {
-    return "TechnicalContent";
+    return "Contenuto Tech";
   }
 }
 
-public class NewsContent : EmailDecorator
+public class NewsContent : IContent
 {
-  public NewsContent(IEmail email) : base(email) { }
-  public override string Header()
+
+  public string Content()
   {
-    return "NewsContent";
-  }
-  public override string EmailBody()
-  {
-    return "NewsContent";
-  }
-  public override string Footer()
-  {
-    return "NewsContent";
+    return "Contenuto News";
   }
 }
 #endregion
@@ -136,18 +114,18 @@ public class Subscriber : IObserver
 #region Strategy
 public class EmailDelivery : IStrategy
 {
-    public string send()
-    {
-      return$"Email";
-    }
+  public string send()
+  {
+    return $"Email";
+  }
 }
 public class SMSDelivery : IStrategy
 {
-    public string send()
-    {
-        return$"Sms";
-        
-    }
+  public string send()
+  {
+    return $"Sms";
+
+  }
 }
 
 public class PushNotificationDelivery : IStrategy
@@ -161,22 +139,22 @@ public class PushNotificationDelivery : IStrategy
 
 class DeliveryStrategy
 {
-    private IStrategy _strategy;
+  private IStrategy _strategy;
 
-    public void SetMethodToSend(IStrategy strategy)
+  public void SetMethodToSend(IStrategy strategy)
+  {
+    _strategy = strategy;
+  }
+  public void Execute()
+  {
+    if (_strategy == null)
     {
-        _strategy = strategy;
+      Console.WriteLine("Nessu metodo di consegna newsletters selezionato!");
+      return;
     }
-    public void Execute()
-    {
-        if (_strategy == null)
-        {
-            Console.WriteLine("Nessu metodo di consegna newsletters selezionato!");
-            return;
-        }
-      string? invio = _strategy.send();
-      Console.WriteLine($"NewsLetters inviate tramite {invio}" );
-    }
+    string? invio = _strategy.send();
+    Console.WriteLine($"NewsLetters inviate tramite {invio}");
+  }
 }
 
 #endregion
@@ -275,6 +253,43 @@ public class EmailDecorator : IEmail
   }
 }
 
+
+public class WithHeader : EmailDecorator
+{
+  public WithHeader(IEmail email) : base(email)
+  {
+  }
+
+  public override string Header()
+  {
+    return base.Header() + "Con Header";
+  }
+}
+
+
+public class WithBody : EmailDecorator
+{
+  public WithBody(IEmail email) : base(email)
+  {
+  }
+
+  public override string EmailBody()
+  {
+    return base.EmailBody() + "Con Body";
+  }
+}
+
+public class ConFooter : EmailDecorator
+{
+  public ConFooter(IEmail email) : base(email)
+  {
+  }
+
+  public override string Footer()
+  {
+    return base.Footer() + "Con Footer";
+  }
+}
 #endregion
 #region MAIN
 
@@ -285,13 +300,10 @@ class Program
   {
     NewsLetterManager manager = NewsLetterManager.Instance;
 
-    IObserver subscriberPromo = new PromotionalContent();
-    IObserver subscriberTech = new TechnicalContent();
-    IObserver subscriberNews = new NewsContent();
 
-    manager.Subscribe(subscriberPromo);
-    manager.Subscribe(subscriberTech);
-    manager.Subscribe(subscriberNews);
+    IObserver subscriber = new Subscriber();
+    manager.Subscribe(subscriber);
+
 
     bool continua = true;
     int scelta;
@@ -305,18 +317,35 @@ class Program
       {
         case 1:
           Console.WriteLine($"Inserisci nome, cognome e email dell'utente.");
+          Console.WriteLine($"Inserisci Nome: ");
           string? nome = Console.ReadLine();
           Console.WriteLine($"Nome inserito.");
+          Console.WriteLine($"Inserisci Cognome:");
           string? cognome = Console.ReadLine();
           Console.WriteLine($"Cognome inserito.");
+          Console.WriteLine($"Inserisci Email:");
           string? email = Console.ReadLine();
           Console.WriteLine($"Email inserita.");
-          
-          manager.Subscribe(utente);
+
+          // Crea utente con factory
+          Utente nuovoUtente = UtenteFactory.Crea(nome, cognome, email);
+
+          // Crea observer e iscrivilo
+          IObserver nuovoSubscriber = new Subscriber();
+          manager.Subscribe(nuovoSubscriber);
+          manager.Notify(nuovoUtente.Nome);
+
+          break;
+
+        case 2:
+          continua = false;
           break;
       }
     }
   }
 }
+
+
+
 
 #endregion
